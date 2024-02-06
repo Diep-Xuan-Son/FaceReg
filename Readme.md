@@ -1,0 +1,1 @@
+This project is used for face recognition in VMS-HCM
