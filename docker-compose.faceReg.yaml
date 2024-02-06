@@ -17,7 +17,7 @@ services:
     image: mq/face_app_op
     restart: always
     environment:
-      - DATABASE_URL=postgresql://vms_op:MQ123456@face_db_op:5432/vms_hcm
+      - DATABASE_URL=postgresql://vms_op:MQ123456@.gitignore:5432/vms_hcm
     build:
       context: .
       dockerfile: Dockerfile
