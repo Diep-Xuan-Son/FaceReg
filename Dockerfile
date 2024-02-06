@@ -29,7 +29,7 @@ RUN pip3 --no-cache-dir install -r requirements_service.txt
 
 RUN python3 -m pip install -U numpy==1.23.4
 
-ADD ./src /FaceReg
+ADD ./src/. /FaceReg
 
 RUN ls -la
 

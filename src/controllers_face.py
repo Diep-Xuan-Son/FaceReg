@@ -34,7 +34,7 @@ class registerFace(Resource):
 			in_memory_file.seek(0)
 			pil_img = Image.open(in_memory_file)
 			img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-			cv2.imwrite(f'{path_code}/face_{i+1}.jpg', img)
+			# cv2.imwrite(f'{path_code}/face_{i+1}.jpg', img)
 			imgs.append(img)
 
 		# #---------------------------face det-------------------------
