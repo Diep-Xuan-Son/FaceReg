@@ -1,0 +1,31 @@
+version: '3'
+services:
+  face_db_op:
+    image: postgres:14
+    container_name: face_db_op
+    restart: always
+    environment:
+      - POSTGRES_USER=vms_op
+      - POSTGRES_PASSWORD=MQ123456
+      - POSTGRES_DB=vms_hcm
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./volumes/pg/data:/var/lib/postgresql/data
+  
+  face_app_op:
+    image: mq/face_app_op
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://vms_op:MQ123456@face_db_op:5432/vms_hcm
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4445:4444"
+    depends_on:
+      - face_db_op
+    command: sh /FaceReg/start_server.sh
+
+# SQLALCHEMY_DATABASE_URI = 'postgresql://vms_op:MQ123456@192.168.6.161:5433/vms_hcm'
+# docker compose -v -f docker-compose.faceReg.yaml up --build 

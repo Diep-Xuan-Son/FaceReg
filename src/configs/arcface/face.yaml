@@ -1,0 +1,4 @@
+model_path: "/mnt/548E15328E150DDC/home2/AI_github/GitHub/BriefCamServer/weights/mxnet_regFace.onnx"
+imgsz: [112,112]
+conf_thres: 0.75
+device: 'cpu'

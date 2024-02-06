@@ -1,0 +1,7 @@
+flask==2.3.3
+flask-restx
+rq
+flask_cors
+flask_sqlalchemy
+#mysqlclient
+flask_migrate
