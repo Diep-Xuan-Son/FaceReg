@@ -195,5 +195,6 @@ class RetinanetRunnable():
 			dets = self.postProcess(input, output)
 			for det in dets:
 				cv2.rectangle(im, det[:2].astype(int), det[2:4].astype(int), (255, 0, 0), 2)
+			# cv2.imwrite("dfsdf.jpg", im)
 			im_preds.append(im)
 		return im_preds

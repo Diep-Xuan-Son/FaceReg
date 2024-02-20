@@ -167,6 +167,7 @@ class searchUser(Resource):
 
 			#---------------------------face det-------------------------
 			dets, miss_det = facedet.inference([img])
+			# facedet.render([img])
 			if len(dets) == 0:
 				return {"success": False, "error": "Don't find any face"}
 			# print(dets)
