@@ -92,6 +92,7 @@ class RetinanetRunnable():
 		boxes = boxes * scale
 		boxes = boxes.cpu().numpy()
 		scores = conf.squeeze(0).data.cpu().numpy()[:, 1]
+		print("---scores: ", max(scores))
 		landms = self.decode_landm(landms.data.squeeze(0), prior_data, self.variance)
 		scale_landms = torch.Tensor([img.shape[3], img.shape[2], img.shape[3], img.shape[2],
 							   img.shape[3], img.shape[2], img.shape[3], img.shape[2],
@@ -171,7 +172,7 @@ class RetinanetRunnable():
 		results = []
 		miss_det = []
 		for i, im in enumerate(ims):
-			im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+			# im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 			input = self.preProcess(im)
 			img = input[0]
 			loc, conf, landms = self.model(img)
