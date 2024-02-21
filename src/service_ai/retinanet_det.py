@@ -57,7 +57,7 @@ class RetinanetRunnable():
 		self.variance = variance
 		self.clip = clip
 		self.conf_thres = conf_thres
-		print("----self.conf_thres: ", self.conf_thres)
+		# print("----self.conf_thres: ", self.conf_thres)
 		self.iou_thres = iou_thres
 		# if str(device) in ['0', '1', '2', '3']:
 		#     self.device = f"cuda:{int(device)}"
