@@ -145,57 +145,58 @@ upload_parser_searchUser.add_argument("image", location='files', type=FileStorag
 @api.route('/searchUser')
 class searchUser(Resource):
 	def post(self):
-		try:
-			args = upload_parser_searchUser.parse_args()
-			uploaded_file = args['image']
+		# try:
+		args = upload_parser_searchUser.parse_args()
+		uploaded_file = args['image']
 
-			st_time = time.time()
-			in_memory_file = io.BytesIO()
-			uploaded_file.save(in_memory_file)
-			in_memory_file.seek(0)
-			pil_img = Image.open(in_memory_file)
-			img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+		st_time = time.time()
+		in_memory_file = io.BytesIO()
+		uploaded_file.save(in_memory_file)
+		in_memory_file.seek(0)
+		pil_img = Image.open(in_memory_file)
+		img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 
-			users = db.session.query(User).all()
-			if len(users) == 0:
-				return {"success": False, "error": "Don't have any registered user"}
+		users = db.session.query(User).all()
+		if len(users) == 0:
+			return {"success": False, "error": "Don't have any registered user"}
 
-			db_ft = f"db_{len(os.listdir(PATH_DB_FT))}.npy"
-			path_db = os.path.join(PATH_DB_FT, db_ft)
-			features = np.load(path_db).astype(np.float16)
-			print("---------Time get db: ", time.time() - st_time)
+		db_ft = f"db_{len(os.listdir(PATH_DB_FT))}.npy"
+		path_db = os.path.join(PATH_DB_FT, db_ft)
+		features = np.load(path_db).astype(np.float16)
+		print("---------Time get db: ", time.time() - st_time)
 
-			#---------------------------face det-------------------------
-			dets, miss_det = facedet.inference([img])
-			# facedet.render([img])
-			if len(dets) == 0:
-				return {"success": False, "error": "Don't find any face"}
-			# print(dets)
-			#////////////////////////////////////////////////////////////
-			print("---------Time detect: ", time.time() - st_time)
+		#---------------------------face det-------------------------
+		dets, miss_det = facedet.inference([img])
+		# facedet.render([img])
+		if len(dets) == 0:
+			return {"success": False, "error": "Don't find any face"}
+		# print(dets)
+		#////////////////////////////////////////////////////////////
+		print("---------Time detect: ", time.time() - st_time)
+		# feature = facereg.get_feature_without_det([img])
+		feature = facereg.get_feature([img], dets)
+		feature = np.array(feature, dtype=np.float16)
 
-			# feature = facereg.get_feature_without_det([img])
-			feature = facereg.get_feature([img], dets)
-			feature = np.array(feature, dtype=np.float16)
+		print("---------Time align: ", time.time() - st_time)
+		similarity, idx_sorted = facereg.compare_face_1_n_n(feature, features)
+		similarity_best = similarity[idx_sorted[0]]
+		print("--------Time reg: ", time.time() - st_time)
 
-			print("---------Time align: ", time.time() - st_time)
-			similarity, idx_sorted = facereg.compare_face_1_n_n(feature, features)
-			similarity_best = similarity[idx_sorted[0]]
-			print("--------Time reg: ", time.time() - st_time)
+		result = None
+		print("---------similarity_best: ", similarity_best)
+		print(len(users))
+		print(len(idx_sorted))
+		if similarity_best > 0.70:
+			result = users[idx_sorted[0]]
+		print("---------Duration: ", time.time()-st_time)
 
-			result = None
-			print("---------similarity_best: ", similarity_best)
-			if similarity_best > 0.70:
-				result = users[idx_sorted[0]]
-			print("---------Duration: ", time.time()-st_time)
+		if result is None:
+			return {"success": False, "error": "Don't find any user"}
 
-			if result is None:
-				return {"success": False, "error": "Don't find any user"}
+		return {"success": True, "Information": {"code": result.code, "name": result.name, "birthday": result.birthday, "avatar": result.avatar, "similarity": float(similarity_best)}}
 
-			return {"success": True, "Information": {"code": result.code, "name": result.name, "birthday": result.birthday, "avatar": result.avatar, "similarity": float(similarity_best)}}
-
-		except Exception as e:
-			return {"success": False, "error": str(e)}
+		# except Exception as e:
+		# 	return {"success": False, "error": str(e)}
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=4444, debug=True, threaded=True)

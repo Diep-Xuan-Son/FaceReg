@@ -13,6 +13,7 @@ sys.path.append(str(FILE.parents[1]))
 if str(ROOT) not in sys.path:
 	sys.path.append(str(ROOT))
 
+from service_ai.models_retinaface.retinaface import RetinaFace
 from libs.yolo_utils import select_device
 from libs.base_libs import *
 
@@ -56,6 +57,7 @@ class RetinanetRunnable():
 		self.variance = variance
 		self.clip = clip
 		self.conf_thres = conf_thres
+		print("----self.conf_thres: ", self.conf_thres)
 		self.iou_thres = iou_thres
 		# if str(device) in ['0', '1', '2', '3']:
 		#     self.device = f"cuda:{int(device)}"
@@ -67,6 +69,7 @@ class RetinanetRunnable():
 		self.model = torch.load(model_path, map_location=self.device)
 
 	def preProcess(self, img):
+		img = cv2.resize(img, (640,640), interpolation=cv2.INTER_AREA)
 		img = np.float32(img)
 		im_height, im_width, _ = img.shape
 		scale = torch.Tensor([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
@@ -168,7 +171,6 @@ class RetinanetRunnable():
 		results = []
 		miss_det = []
 		for i, im in enumerate(ims):
-			# im = np.array(im.convert('RGB'))
 			im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 			input = self.preProcess(im)
 			img = input[0]
