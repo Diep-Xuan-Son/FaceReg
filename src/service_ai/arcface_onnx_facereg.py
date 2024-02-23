@@ -108,5 +108,7 @@ class FaceRegRunnable():
         # similarity = (np.tanh((1.22507105 - dist) * 7.321198934) + 1) / 2
         similarity = (np.tanh((1.23132175 - dist) * 6.602259425) + 1) / 2
         similarity = np.mean(similarity, axis=1)
-        similarity_sort_idx = similarity.argsort()[::-1]
+        rand = np.random.random(similarity.size)
+        # similarity_sort_idx = similarity.argsort()[::-1]
+        similarity_sort_idx = np.lexsort((rand,similarity))[::-1]
         return similarity, similarity_sort_idx
