@@ -51,7 +51,7 @@ class PriorBox(object):
 		return output
 
 class RetinanetRunnable():
-	def __init__(self, model_path, min_sizes, steps, variance, clip, conf_thres, iou_thres, device):
+	def __init__(self, model_path, min_sizes, steps, variance, clip, conf_thres, iou_thres, image_size, device):
 		self.min_sizes = min_sizes
 		self.steps = steps
 		self.variance = variance
@@ -67,12 +67,13 @@ class RetinanetRunnable():
 		#     self.device = "cpu"
 		self.device = select_device(device)
 		self.model = torch.load(model_path, map_location=self.device)
+		self.imagesz = image_size
 
 	def preProcess(self, img):
-		img = cv2.resize(img, (640,640), interpolation=cv2.INTER_AREA)
-		img = np.float32(img)
 		im_height, im_width, _ = img.shape
-		scale = torch.Tensor([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
+		scale = torch.Tensor([im_width, im_height, im_width, im_height])
+		img = cv2.resize(img, (self.imagesz,self.imagesz), interpolation=cv2.INTER_AREA)
+		img = np.float32(img)
 		img -= (104, 117, 123)
 		img = img.transpose(2, 0, 1)
 		img = torch.from_numpy(img).unsqueeze(0)
@@ -84,7 +85,7 @@ class RetinanetRunnable():
 		img, scale, im_height, im_width = input
 		loc, conf, landms = output
 		priorbox = PriorBox(min_sizes=self.min_sizes, steps=self.steps, \
-							clip=self.clip, image_size=(im_height, im_width))
+							clip=self.clip, image_size=(self.imagesz, self.imagesz))
 		priors = priorbox.forward()
 		priors = priors.to(self.device)
 		prior_data = priors.data
@@ -92,11 +93,9 @@ class RetinanetRunnable():
 		boxes = boxes * scale
 		boxes = boxes.cpu().numpy()
 		scores = conf.squeeze(0).data.cpu().numpy()[:, 1]
-		print("---scores: ", max(scores))
 		landms = self.decode_landm(landms.data.squeeze(0), prior_data, self.variance)
-		scale_landms = torch.Tensor([img.shape[3], img.shape[2], img.shape[3], img.shape[2],
-							   img.shape[3], img.shape[2], img.shape[3], img.shape[2],
-							   img.shape[3], img.shape[2]])
+		scale_landms = torch.Tensor([im_width, im_height, im_width, im_height, im_width,
+							   im_height, im_width, im_height, im_width, im_height])
 		scale_landms = scale_landms.to(self.device)
 		landms = landms * scale_landms
 		landms = landms.cpu().numpy()

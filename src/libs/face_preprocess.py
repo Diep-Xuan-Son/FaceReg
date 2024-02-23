@@ -65,14 +65,22 @@ def preprocess(img, bbox=None, landmark=None, **kwargs):
   
   if landmark is not None:
     assert len(image_size)==2
+    # src = np.array([ 
+    #   [30.2946, 51.6963], 
+    #   [65.5318, 51.5014], 
+    #   [48.0252, 71.7366], 
+    #   [33.5493, 92.3655], 
+    #   [62.7299, 92.2041] ], dtype=np.float32 ) 
     src = np.array([
-      [30.2946, 51.6963],
-      [65.5318, 51.5014],
+      [30.2946, 46.6963],
+      [65.5318, 46.5014],
       [48.0252, 71.7366],
-      [33.5493, 92.3655],
-      [62.7299, 92.2041] ], dtype=np.float32 )
+      [33.5493, 97.3655],
+      [62.7299, 97.2041] ], dtype=np.float32 )
     if image_size[1]==112:
-      src[:,0] += 8.0
+      # src[:,0] += 8.0
+      src[:,0] += 70.0
+      src[:,1] += 45.0
     dst = landmark.astype(np.float32)
 
     tform = trans.SimilarityTransform()
@@ -110,7 +118,7 @@ def preprocess(img, bbox=None, landmark=None, **kwargs):
     #print(src)
     #print(dst)
     #print(M)
-    warped = cv2.warpAffine(img,M,(image_size[1],image_size[0]), borderValue = 0.0)
+    warped = cv2.warpAffine(img,M,(224,224), borderValue = 0.0)
 
     #tform3 = trans.ProjectiveTransform()
     #tform3.estimate(src, dst)
