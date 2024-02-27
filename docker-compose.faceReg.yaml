@@ -1,4 +1,7 @@
 version: '3'
+networks:
+  vms_op_bridge:
+    driver: bridge
 services:
   face_db_op:
     image: postgres:14
@@ -12,8 +15,8 @@ services:
       - "5433:5432"
     volumes:
       - ./volumes/pg/data:/var/lib/postgresql/data
-    # networks:
-    #   vms_op_bridge:
+    networks:
+      vms_op_bridge:
   
   face_app_op:
     image: mq/face_app_op
@@ -30,9 +33,9 @@ services:
       - face_db_op
     command: sh /FaceReg/start_server.sh
     volumes:
-      - ./volumes/faceReg/database_feartures:/var/lib/postgresql/data
-    # networks:
-    #   vms_op_bridge:
+      - ./volumes/faceReg/database_feartures:/FaceReg/static/database_feartures
+    networks:
+      vms_op_bridge:
 
 # SQLALCHEMY_DATABASE_URI = 'postgresql://vms_op:MQ123456@192.168.6.161:5433/vms_hcm'
 # docker compose -v -f docker-compose.faceReg.yaml up --build 
