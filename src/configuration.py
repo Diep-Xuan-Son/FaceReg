@@ -21,3 +21,5 @@ class ConfigMYSQL():
 									'pool_size': 100,
 									"max_overflow": 200,
 								}
+
+# export DATABASE_URL=postgresql+psycopg2://vms_op:MQ123456@192.168.6.161:5433/vms_hcm

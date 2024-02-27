@@ -16,7 +16,8 @@ class registerFace(Resource):
 		birthday = args["birthday"]
 
 		codes = db.session.query(User.code).all()
-		# print(codes)
+		codes = list(chain(*codes))
+		print(codes)
 		if code in codes:
 			return {"success": False, "error": "This user has been registered!"}
 
@@ -38,6 +39,7 @@ class registerFace(Resource):
 			imgs.append(img)
 
 		# #---------------------------face det-------------------------
+		miss_det = []
 		dets, miss_det = facedet.inference(imgs)
 		if len(dets) == 0:
 			return {"success": False, "error": "Don't find any face"}
@@ -166,8 +168,8 @@ class searchUser(Resource):
 		print("---------Time get db: ", time.time() - st_time)
 
 		#---------------------------face det-------------------------
-		dets, miss_det = facedet.inference([img])
 		# facedet.render([img])
+		dets, miss_det = facedet.inference([img])
 		if len(dets) == 0:
 			return {"success": False, "error": "Don't find any face"}
 		# print(dets)

@@ -37,6 +37,7 @@ import cv2
 import numpy as np
 import time
 import shutil
+from itertools import chain
 
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 # print(SQLALCHEMY_DATABASE_URI)
