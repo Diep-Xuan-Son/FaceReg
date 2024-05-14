@@ -1,0 +1,4 @@
+model_path: "/mnt/548E15328E150DDC/home2/AI_github/GitHub/BriefCamServer/weights/spoofing.pt"
+imgsz: 448
+device: 'cpu'
+cls_names: ['authentic', 'fake']

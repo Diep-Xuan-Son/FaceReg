@@ -10,7 +10,7 @@ class ConfigMYSQL():
 	SECRET_KEY   = "77tgFCdrEEdv77554##@3"
 	SQLALCHEMY_TRACK_MODIFICATIONS 	= True
 	# SQLALCHEMY_DATABASE_URI = 'mysql://root:123456@localhost/facedb'
-	# SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://vms_op:MQ123456@192.168.6.161:5433/vms_hcm'
+	SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://vms_op:MQ123456@192.168.6.142:5433/vms_hcm'
 
 	file_allowed = ['image/png', 'image/jpeg', 'application/octet-stream']
 	JWT_EXPIRATION_DELTA = timedelta(days=365)

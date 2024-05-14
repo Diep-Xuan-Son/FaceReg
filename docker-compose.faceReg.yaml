@@ -18,24 +18,24 @@ services:
     networks:
       vms_op_bridge:
   
-  face_app_op:
-    image: mq/face_app_op
-    restart: always
-    container_name: face_app_op
-    environment:
-      - DATABASE_URL=postgresql://vms_op:MQ123456@face_db_op:5432/vms_hcm
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "4445:4444"
-    depends_on:
-      - face_db_op
-    command: sh /FaceReg/start_server.sh
-    volumes:
-      - ./volumes/faceReg/database_feartures:/FaceReg/static/database_feartures
-    networks:
-      vms_op_bridge:
+  # face_app_op:
+  #   image: mq/face_app_op
+  #   restart: always
+  #   container_name: face_app_op
+  #   environment:
+  #     - DATABASE_URL=postgresql://vms_op:MQ123456@face_db_op:5432/vms_hcm
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4445:4444"
+  #   depends_on:
+  #     - face_db_op
+  #   command: sh /FaceReg/start_server.sh
+  #   volumes:
+  #     - ./volumes/faceReg/database_feartures:/FaceReg/static/database_feartures
+  #   networks:
+  #     vms_op_bridge:
 
 # SQLALCHEMY_DATABASE_URI = 'postgresql://vms_op:MQ123456@192.168.6.161:5433/vms_hcm'
 # docker compose -v -f docker-compose.faceReg.yaml up --build 

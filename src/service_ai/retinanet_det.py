@@ -181,7 +181,7 @@ class RetinanetRunnable():
 				result = dict(loc=dets[:,:4], conf=dets[:,4], landms=dets[:,5:])
 				results.append(result)
 			else:
-				miss_det.append(i+1)
+				miss_det.append(i)
 		# print(results)
 		return results, miss_det
 

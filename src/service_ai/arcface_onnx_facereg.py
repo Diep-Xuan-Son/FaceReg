@@ -100,10 +100,10 @@ class FaceRegRunnable():
         # print("---------------feature1: ", feature1)
         # print("---------------feature2: ", feature2)
         # dist = spatial.distance.euclidean(feature1[0], feature2[0])
-        dist = np.linalg.norm(feature1 - feature1, axis=1)
+        dist = np.linalg.norm(feature1 - feature2, axis=1)
         similarity = (np.tanh((1.23132175 - dist) * 6.602259425) + 1) / 2
         similarity_sort_idx = similarity.argsort()[::-1]
-        return similarity, similarity_sort_idx[0]
+        return similarity, similarity_sort_idx
 
     def compare_face_1_n_n(self, feature, features):
         print(feature.shape)

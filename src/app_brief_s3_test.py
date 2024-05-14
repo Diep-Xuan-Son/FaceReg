@@ -30,6 +30,7 @@ import socket
 
 from service_ai.arcface_onnx_facereg import FaceRegRunnable
 from service_ai.retinanet_det import RetinanetRunnable
+from service_ai.spoof_detection import SpoofDetectionRunnable
 from configs.base_config import get_config
 import io
 from PIL import Image
@@ -49,7 +50,7 @@ s.connect(("8.8.8.8", 80))
 app = Flask(__name__)
 
 app.config.from_object('configuration.ConfigMYSQL')
-if SQLALCHEMY_DATABASE_URI is not None:
+if SQLALCHEMY_DATABASE_URI is not None or app.config["SQLALCHEMY_DATABASE_URI"]=='':
 	app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 # print(app.config)
 
@@ -58,8 +59,8 @@ migrate = Migrate(app, db)
 q = Queue(connection=conn)
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
-api = Api(api_bp, version='1.0', title='Brief Cam API',
-	description='Brief Cam API for everyone', base_url='/api'
+api = Api(api_bp, version='1.0', title='Face Recognition API',
+	description='Face Recognition API for everyone', base_url='/api'
 )
 app.register_blueprint(api_bp)
 CORS(app, supports_credentials=True, allow_headers=['Content-Type', 'X-ACCESS_TOKEN', 'Authorization'], origins=[f"http://{s.getsockname()[0]}:3456"])
@@ -71,3 +72,6 @@ facereg = FaceRegRunnable(**CONFIG_FACEREG)
 
 CONFIG_FACEDET = get_config(root=ROOT, type_config="facedet")
 facedet = RetinanetRunnable(**CONFIG_FACEDET)
+
+CONFIG_SPOOFING = get_config(root=ROOT, type_config="spoofing")
+spoofingdet = SpoofDetectionRunnable(**CONFIG_SPOOFING)

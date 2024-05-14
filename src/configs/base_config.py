@@ -20,4 +20,10 @@ def get_config(root, type_config):
             CONFIG = yaml.safe_load(stream)
             CONFIG["model_path"] = f"{str(root)}/weights/detectFace_model.pt"
 
+    if type_config == "spoofing":
+        config = f"{str(root)}/configs/spoofing/spoofing.yaml"
+        with open(config, 'r') as stream:
+            CONFIG = yaml.safe_load(stream)
+            CONFIG["model_path"] = f"{str(root)}/weights/spoofing.pt"
+
     return CONFIG
