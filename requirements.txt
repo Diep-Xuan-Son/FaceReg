@@ -50,3 +50,8 @@ fastapi
 uvicorn[standard]
 sqlalchemy
 psycopg2-binary
+
+linformer==0.2.1
+vit_pytorch==1.2.9
+pyyaml==6.0.1
+pillow==9.4.0

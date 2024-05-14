@@ -71,8 +71,16 @@ def preprocess(img, bbox=None, landmark=None, **kwargs):
       [48.0252, 71.7366],
       [33.5493, 92.3655],
       [62.7299, 92.2041] ], dtype=np.float32 )
+    # src = np.array([
+    #   [30.2946, 46.6963],
+    #   [65.5318, 46.5014],
+    #   [48.0252, 71.7366],
+    #   [33.5493, 97.3655],
+    #   [62.7299, 97.2041] ], dtype=np.float32 )
     if image_size[1]==112:
       src[:,0] += 8.0
+      # src[:,0] += 70.0
+      # src[:,1] += 45.0
     dst = landmark.astype(np.float32)
 
     tform = trans.SimilarityTransform()

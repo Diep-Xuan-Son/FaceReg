@@ -42,7 +42,7 @@ class FaceRegRunnable():
             for j, bboxe in enumerate(bboxes):
                 x1, y1, x2, y2 = bboxe
                 area = (x2-x1) * (y2-y1)
-                if area > maxArea and area > 900:
+                if area > maxArea and area > 400:
                 # if area > maxArea:
                     maxArea = area
                     biggestBox = bboxe
@@ -54,6 +54,8 @@ class FaceRegRunnable():
                 landmarks = landmarks.reshape((2,5)).T
 
                 nimg = face_preprocess(im, bbox, landmarks, image_size=self.imgsz)
+                # cv2.imwrite("aaaaa.jpg", nimg)
+                nimg = cv2.resize(nimg, (112,112), interpolation=cv2.INTER_AREA)
                 nimg_transformed = cv2.cvtColor(nimg, cv2.COLOR_BGR2RGB)
                 nimg_transformed = np.transpose(nimg, (2,0,1))
 
@@ -61,7 +63,7 @@ class FaceRegRunnable():
                 input = {}
                 input["data"] = input_blob.astype(np.float32)
                 embedding = self.sess.run(None, input)
-                print(embedding[0].shape)
+                # print(embedding[0].shape)
                 embedding = preprocessing.normalize(embedding[0]).flatten()
 
                 facenet_fingerprint = embedding.reshape(1,-1)
@@ -98,15 +100,19 @@ class FaceRegRunnable():
         # print("---------------feature1: ", feature1)
         # print("---------------feature2: ", feature2)
         # dist = spatial.distance.euclidean(feature1[0], feature2[0])
-        dist = np.linalg.norm(feature - feature1, axis=1)
+        dist = np.linalg.norm(feature1 - feature2, axis=1)
         similarity = (np.tanh((1.23132175 - dist) * 6.602259425) + 1) / 2
         similarity_sort_idx = similarity.argsort()[::-1]
-        return similarity, similarity_sort_idx[0]
+        return similarity, similarity_sort_idx
 
     def compare_face_1_n_n(self, feature, features):
+        print(feature.shape)
+        print(features.shape)
         dist = np.linalg.norm(feature - features, axis=2)
         # similarity = (np.tanh((1.22507105 - dist) * 7.321198934) + 1) / 2
         similarity = (np.tanh((1.23132175 - dist) * 6.602259425) + 1) / 2
         similarity = np.mean(similarity, axis=1)
-        similarity_sort_idx = similarity.argsort()[::-1]
+        rand = np.random.random(similarity.size)
+        # similarity_sort_idx = similarity.argsort()[::-1]
+        similarity_sort_idx = np.lexsort((rand,similarity))[::-1]
         return similarity, similarity_sort_idx
