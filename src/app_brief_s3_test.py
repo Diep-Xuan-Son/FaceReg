@@ -31,6 +31,7 @@ import socket
 from service_ai.arcface_onnx_facereg import FaceRegRunnable
 from service_ai.retinanet_det import RetinanetRunnable
 from service_ai.spoof_detection import SpoofDetectionRunnable
+from service_ai.spoof_detection_onnx import FakeFace
 from configs.base_config import get_config
 import io
 from PIL import Image
@@ -73,5 +74,7 @@ facereg = FaceRegRunnable(**CONFIG_FACEREG)
 CONFIG_FACEDET = get_config(root=ROOT, type_config="facedet")
 facedet = RetinanetRunnable(**CONFIG_FACEDET)
 
-CONFIG_SPOOFING = get_config(root=ROOT, type_config="spoofing")
-spoofingdet = SpoofDetectionRunnable(**CONFIG_SPOOFING)
+# CONFIG_SPOOFING = get_config(root=ROOT, type_config="spoofing")
+# spoofingdet = SpoofDetectionRunnable(**CONFIG_SPOOFING)
+
+spoofingdet = FakeFace(f"{str(ROOT)}/weights/spoofing.onnx")
