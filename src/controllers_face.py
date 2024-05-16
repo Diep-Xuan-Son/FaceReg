@@ -321,9 +321,10 @@ class registerFacev2(Resource):
 			# if code in codes:
 			# 	return {"success": False, "code": 8004, "error": "This user has been registered!"}
 			path_code = os.path.join(PATH_IMG_AVATAR, code)
-			if os.path.exists(path_code):
-				shutil.rmtree(path_code)
-			os.mkdir(path_code)
+			# if os.path.exists(path_code):
+			# 	shutil.rmtree(path_code)
+			# os.mkdir(path_code)
+			os.makedirs(path_code, exist_ok=True)
 
 			uploaded_files = args['images']
 			# print(len(uploaded_files))
